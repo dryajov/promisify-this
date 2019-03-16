@@ -206,3 +206,30 @@ test('should bypass simple properties', async (t) => {
   t.isEqual(c.p2, 'p2')
   t.end()
 })
+
+test('allow overriding this', async (t) => {
+  class Class1 {
+    constructor () {
+      this.name = 'class1'
+    }
+
+    fn (cb) {
+      return cb(null, this.name)
+    }
+  }
+
+  class Class2 {
+    constructor () {
+      this.name = 'class2'
+    }
+
+    fn (cb) {
+      return cb(null, this.name)
+    }
+  }
+
+  const c = promisify(new Class2(), new Class1())
+  const res = await c.fn()
+  t.isEqual(res, 'class1')
+  t.end()
+})

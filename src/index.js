@@ -35,7 +35,7 @@ module.exports = (methods, _this) => {
 
       // generate async methods lazily
       if (!asyncMethods[prop]) {
-        asyncMethods[prop] = makeAsync(target[prop], target)
+        asyncMethods[prop] = makeAsync(target[prop], _this)
       }
       return asyncMethods[prop]
     }

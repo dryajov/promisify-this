@@ -23,7 +23,9 @@
   }
 
   const mP = promisify(new MyClass('d'))
-  console.log('called with a b d')
+  const res = mP.fn('a', 'b')
+  console.log(res)
+  // prints 'called with a b d'
 ```
 
 Enjoy!

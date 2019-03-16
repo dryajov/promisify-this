@@ -4,7 +4,7 @@
 
 ## API
 
-- `promisify(instance, [this], [{skipPrivate: true, skipList: []}])` - promisify a function, object literal or an instance, optionally using an alternative `this`.
+- `promisify(instance [, this][, {skipPrivate: true, skipList: []}])` - promisify a function, object literal or an instance, optionally using an alternative `this`.
   - `instance` - the instance to promisify, can be object, function or a class instance
   - `this` optional - `this` to call the methods with
   - `options` optional - an options list

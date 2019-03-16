@@ -1,44 +1,29 @@
-# Async json rpc
+# Promisify anything preserving `this`
 
-> Simple transport agnostic JSON RPC module
+> Simple promisify that works on object instances preserving this
 
-## Why?
+## API
 
-I wanted a simple transport agnostic RPC module that lets me use it with any duplex stream. I also wanted it to support basic class instance functionality, like inheritance, etc... This is it. 
-
-It uses JSON RPC as the rpc standard and by default sends all traffic as JSON, however, this can be serialized with something more efficient like messagepack or cbor as the network representation. 
-
-This module doesn't do any of that however, it leaves it to the user to decide which on the wire representation works better for its use case.
+- `promisify(instance, [this])` - promisify a function, object literal or an instance, optionally using an alternative `this`.
+  - `instance` - the instance to promisify, can be object, function or a class instance
+  - an optional `this` to call the methods with
 
 ## Usage
 
-> Client
 ```js
-const stream = ... // get duplex stream
+  const promisify = require('promisify-this')
 
-const methods = {
-  sayHello: () => {} // just a stub
-}
+  class MyClass {
+    constructor (d) {
+      this.d = d
+    }
+    fn (p1, p2, cb) {
+      return cb(null, `called with ${p1} ${p2} ${this.d}`)
+    }
+  }
 
-const rpc = createRpc({ stream, methods })
-
-const hello = async () => {
-  const res = await rpc.sayHello()
-  console.log(res)
-}
-
-hello() // prints 'Hello!'
-```
-
-> Server
-```js
-const stream = ... // get duplex stream
-
-const methods = {
-  sayHello: async () => { return 'Hello!' }
-}
-
-createRpc({ stream, methods }) // listen for request
+  const mP = promisify(new MyClass('d'))
+  console.log('called with a b d')
 ```
 
 Enjoy!

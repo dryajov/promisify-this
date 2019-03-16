@@ -182,10 +182,27 @@ test('should not throw if this is type of and mixing legacy classes (functions) 
 })
 
 test('should be instanceof', async (t) => {
-  function Class1 () {
+  class Class1 {
   }
 
   const c = promisify(new Class1())
   t.ok(c instanceof Class1)
+  t.end()
+})
+
+test('should bypass simple properties', async (t) => {
+  class Class1 {
+    constructor () {
+      this.p2 = 'p2'
+    }
+
+    get p1 () {
+      return 'p1'
+    }
+  }
+
+  const c = promisify(new Class1())
+  t.isEqual(c.p1, 'p1')
+  t.isEqual(c.p2, 'p2')
   t.end()
 })

@@ -6,7 +6,7 @@
 
 - `promisify(instance, [this])` - promisify a function, object literal or an instance, optionally using an alternative `this`.
   - `instance` - the instance to promisify, can be object, function or a class instance
-  - an optional `this` to call the methods with
+  - `this` - an optional `this` to call the methods with
 
 ## Usage
 

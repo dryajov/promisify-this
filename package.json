@@ -1,0 +1,15 @@
+{
+  "name": "promisify-this",
+  "version": "1.0.0",
+  "description": "Promisify ",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test/index.js"
+  },
+  "author": "Dmitriy Ryajov <dryajov@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "tape": "^4.10.1",
+    "tape-await": "^0.1.1"
+  }
+}

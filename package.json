@@ -17,5 +17,8 @@
   "devDependencies": {
     "tape": "^4.10.1",
     "tape-await": "^0.1.1"
+  },
+  "dependencies": {
+    "@nodeutils/defaults-deep": "^1.1.0"
   }
 }

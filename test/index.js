@@ -180,3 +180,63 @@ test('should not throw if this is type of and mixing legacy classes (functions) 
   t.doesNotThrow(() => promisify(new Class1(), new Class2()))
   t.end()
 })
+
+test('should skip private', async (t) => {
+  class Class1 {
+    _private (cb) {
+      return cb(null, true)
+    }
+
+    public (cb) {
+      return cb(null, 'called')
+    }
+  }
+
+  const mP = promisify(new Class1())
+  mP._private((err, res) => {
+    if (err) return t.end(err)
+    t.ok(res)
+  })
+
+  const res = await mP.public()
+  t.isEqual(res, 'called')
+  t.end()
+})
+
+test('should use method skip list', async (t) => {
+  class Class1 {
+    _private (cb) {
+      return cb(null, true)
+    }
+
+    public (cb) {
+      return cb(null, 'called')
+    }
+  }
+
+  const mP = promisify(new Class1(), null, { skipList: ['public'] })
+  mP._private((err, res) => {
+    if (err) return t.end(err)
+    t.ok(res)
+  })
+
+  mP.public((err, res) => {
+    if (err) return t.end(err)
+    t.isEqual(res, 'called')
+  })
+
+  t.end()
+})
+
+test('should not skip private if requested', async (t) => {
+  class Class1 {
+    _private (cb) {
+      return cb(null, 'called')
+    }
+  }
+
+  const mP = promisify(new Class1(), { skipPrivate: false })
+  const res = await mP._private()
+  t.isEqual(res, 'called')
+  t.end()
+})

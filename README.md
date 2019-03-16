@@ -7,9 +7,6 @@
 - `promisify(instance [, this][, {skipPrivate: true, skipList: []}])` - promisify a function, object literal or an instance, optionally using an alternative `this`.
   - `instance` - the instance to promisify, can be object, function or a class instance
   - `this` optional - `this` to call the methods with
-  - `options` optional - an options list
-    - `skipPrivate` - should private (`_`) methods be skipped
-    - `skipList` - a list of method names to not promisify
 
 ## Usage
 

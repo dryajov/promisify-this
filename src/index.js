@@ -1,7 +1,5 @@
 'use strict'
 
-const defaulsDeep = require('@nodeutils/defaults-deep')
-
 function getAllFuncs (obj) {
   let props = []
 
@@ -19,13 +17,8 @@ function getAllFuncs (obj) {
   })
 }
 
-module.exports = (methods, _this, options = { skipPrivate: true, skipList: [] }) => {
+module.exports = (methods, _this) => {
   if (!_this) {
-    _this = methods
-  }
-
-  if (typeof _this.skipPrivate !== 'undefined' || typeof _this.skipList !== 'undefined') {
-    options = defaulsDeep(_this, { skipPrivate: true, skipList: [] })
     _this = methods
   }
 
@@ -50,11 +43,16 @@ module.exports = (methods, _this, options = { skipPrivate: true, skipList: [] })
     return makeAsync(methods)
   }
 
+  const proxiedMethods = {}
   getAllFuncs(methods).forEach((method) => {
-    if (options.skipPrivate && method.startsWith('_')) return
-    if (options.skipList.indexOf(method) > -1) return
-    methods[method] = makeAsync(methods[method])
+    proxiedMethods[method] = makeAsync(methods[method])
   })
 
-  return methods
+  const handler = {
+    get (target, prop, receiver) {
+      return proxiedMethods[prop]
+    }
+  }
+
+  return new Proxy(methods, handler)
 }

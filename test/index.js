@@ -181,62 +181,11 @@ test('should not throw if this is type of and mixing legacy classes (functions) 
   t.end()
 })
 
-test('should skip private', async (t) => {
-  class Class1 {
-    _private (cb) {
-      return cb(null, true)
-    }
-
-    public (cb) {
-      return cb(null, 'called')
-    }
+test('should be instanceof', async (t) => {
+  function Class1 () {
   }
 
-  const mP = promisify(new Class1())
-  mP._private((err, res) => {
-    if (err) return t.end(err)
-    t.ok(res)
-  })
-
-  const res = await mP.public()
-  t.isEqual(res, 'called')
-  t.end()
-})
-
-test('should use method skip list', async (t) => {
-  class Class1 {
-    _private (cb) {
-      return cb(null, true)
-    }
-
-    public (cb) {
-      return cb(null, 'called')
-    }
-  }
-
-  const mP = promisify(new Class1(), null, { skipList: ['public'] })
-  mP._private((err, res) => {
-    if (err) return t.end(err)
-    t.ok(res)
-  })
-
-  mP.public((err, res) => {
-    if (err) return t.end(err)
-    t.isEqual(res, 'called')
-  })
-
-  t.end()
-})
-
-test('should not skip private if requested', async (t) => {
-  class Class1 {
-    _private (cb) {
-      return cb(null, 'called')
-    }
-  }
-
-  const mP = promisify(new Class1(), { skipPrivate: false })
-  const res = await mP._private()
-  t.isEqual(res, 'called')
+  const c = promisify(new Class1())
+  t.ok(c instanceof Class1)
   t.end()
 })

@@ -6,6 +6,12 @@
   "scripts": {
     "test": "tape test/index.js"
   },
+  "keywords": [
+    "promisify",
+    "this",
+    "instance",
+    "class"
+  ],
   "author": "Dmitriy Ryajov <dryajov@gmail.com>",
   "license": "ISC",
   "devDependencies": {

@@ -10,7 +10,8 @@
     "promisify",
     "this",
     "instance",
-    "class"
+    "class",
+    "lazy"
   ],
   "author": "Dmitriy Ryajov <dryajov@gmail.com>",
   "license": "ISC",

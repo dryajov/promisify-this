@@ -43,14 +43,14 @@ module.exports = (methods, _this) => {
     return makeAsync(methods)
   }
 
-  const proxiedMethods = {}
+  const asyncMethods = {}
   getAllFuncs(methods).forEach((method) => {
-    proxiedMethods[method] = makeAsync(methods[method])
+    asyncMethods[method] = makeAsync(methods[method])
   })
 
   const handler = {
     get (target, prop, receiver) {
-      return proxiedMethods[prop]
+      return asyncMethods[prop]
     }
   }
 

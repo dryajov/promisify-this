@@ -2,7 +2,7 @@
   "name": "promisify-this",
   "version": "1.0.0",
   "description": "Promisify anything preserving this",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "tape test/index.js"
   },

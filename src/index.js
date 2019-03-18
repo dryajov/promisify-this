@@ -1,24 +1,29 @@
 'use strict'
 
+const makeAsync = (fn, _this) => {
+  return async function () {
+    const args = Array.prototype.slice.call(arguments)
+    return new Promise((resolve, reject) => {
+      fn.call(_this, ...args, (err, res) => {
+        if (err) return reject(err)
+        return resolve(res)
+      })
+    })
+  }
+}
+
 module.exports = (methods, _this) => {
   if (!_this) {
     _this = methods
   }
 
-  const makeAsync = (fn, __this) => {
-    return async function () {
-      const args = Array.prototype.slice.call(arguments)
-      return new Promise((resolve, reject) => {
-        fn.call(__this, ...args, (err, res) => {
-          if (err) return reject(err)
-          return resolve(res)
-        })
-      })
-    }
+  if (typeof methods === 'function') {
+    return makeAsync(methods, _this)
   }
 
-  if (typeof methods === 'function') {
-    return makeAsync(methods)
+  if (methods.constructor) {
+    const Clazz = methods.constructor
+    if (!(_this instanceof Clazz)) throw new Error('this override should be instanceof instance!')
   }
 
   const asyncMethods = {}

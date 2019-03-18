@@ -11,6 +11,7 @@
 ## Usage
 
 ```js
+(async () => {
   const promisify = require('promisify-this')
 
   class MyClass {
@@ -23,9 +24,10 @@
   }
 
   const mP = promisify(new MyClass('d'))
-  const res = mP.fn('a', 'b')
+  const res = await mP.fn('a', 'b')
   console.log(res)
   // prints 'called with a b d'
+})()
 ```
 
 Enjoy!

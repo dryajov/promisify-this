@@ -126,7 +126,7 @@ test('should throw if this is not the same type', async (t) => {
   class Class2 {
   }
 
-  t.throws(() => promisify(new Class1(), new Class2()), /methods should be an instance of this!/)
+  t.throws(() => promisify(new Class1(), new Class2()), /this override should be instanceof instance!/)
   t.end()
 })
 
@@ -218,8 +218,9 @@ test('allow overriding this', async (t) => {
     }
   }
 
-  class Class2 {
+  class Class2 extends Class1 {
     constructor () {
+      super()
       this.name = 'class2'
     }
 
@@ -228,8 +229,8 @@ test('allow overriding this', async (t) => {
     }
   }
 
-  const c = promisify(new Class2(), new Class1())
+  const c = promisify(new Class1(), new Class2())
   const res = await c.fn()
-  t.isEqual(res, 'class1')
+  t.isEqual(res, 'class2')
   t.end()
 })

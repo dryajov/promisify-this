@@ -1,6 +1,6 @@
 {
   "name": "promisify-this",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Promisify anything preserving this",
   "main": "src/index.js",
   "scripts": {

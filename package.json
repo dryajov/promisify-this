@@ -14,7 +14,7 @@
     "lazy"
   ],
   "author": "Dmitriy Ryajov <dryajov@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "tape": "^4.10.1",
     "tape-await": "^0.1.1"

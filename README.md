@@ -31,3 +31,7 @@
 ```
 
 Enjoy!
+
+## Licence
+
+MIT

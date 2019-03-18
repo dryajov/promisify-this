@@ -15,7 +15,8 @@ NOTE: There might be some edge cases where it still breaks, so far I'm not aware
 ## API
 
 - `promisify(instance [, this])` - promisify a function, object literal or a class instance, optionally using an alternative `this`. Instance methods are promisified lazily, which allows promisifying large objects without much initial overhead.
-  - `instance` - the instance to promisify, can be object, function or a class instance. All functions and methods are assumed to be in standard callback style, e.g. `function(args, callback)` where `callback` takes an `error` as its first argument. 
+  - `instance` - the instance to promisify, can be object, function or a class instance. 
+    - All functions and methods are assumed to be in standard callback style, e.g. `function(args, callback)` where `callback` takes an `error` as its first argument. 
   - `this` optional - `this` to call the methods with
 
 ## Usage

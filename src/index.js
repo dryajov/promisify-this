@@ -12,6 +12,23 @@ const makeAsync = (fn, _this) => {
   }
 }
 
+const getOwnMethods = (obj) => {
+  let props = []
+
+  const filterFn = (e) => {
+    return (typeof obj[e] === 'function' && e !== 'constructor')
+  }
+
+  do {
+    props = props.concat(Object.getOwnPropertyNames(obj).sort()
+      .filter(filterFn))
+  } while ((obj = Object.getPrototypeOf(obj)) && obj !== Object.prototype) // eslint-disable-line
+
+  return props.sort().filter((e, i, arr) => {
+    return e !== arr[i + 1]
+  })
+}
+
 module.exports = (methods, _this) => {
   if (!_this) {
     _this = methods
@@ -26,10 +43,11 @@ module.exports = (methods, _this) => {
     if (!(_this instanceof Clazz)) throw new Error('this override should be instanceof instance!')
   }
 
+  const ownMethods = getOwnMethods(methods)
   const asyncMethods = {}
   const handler = {
     get (target, prop, receiver) {
-      if (typeof target[prop] !== 'function') {
+      if (typeof target[prop] !== 'function' || ownMethods.indexOf(prop) < 0) {
         return Reflect.get(...arguments)
       }
 

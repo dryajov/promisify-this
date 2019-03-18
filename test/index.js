@@ -119,7 +119,7 @@ test('class instance with constructor params', async (t) => {
   t.end()
 })
 
-test('should throw if this is not the same type', async (t) => {
+test('should throw if `this` is not the same type', async (t) => {
   class Class1 {
   }
 
@@ -130,7 +130,7 @@ test('should throw if this is not the same type', async (t) => {
   t.end()
 })
 
-test('should not throw if this is type of', async (t) => {
+test('should not throw if `this` is type of', async (t) => {
   class Class1 {
   }
 
@@ -156,7 +156,7 @@ test('works with legacy classes (functions)', async (t) => {
   t.end()
 })
 
-test('should not throw if this is type of and using legacy classes (functions)', async (t) => {
+test('should not throw if `this` is type of and using legacy classes (functions)', async (t) => {
   function Class1 () {
   }
 
@@ -170,7 +170,7 @@ test('should not throw if this is type of and using legacy classes (functions)',
   t.end()
 })
 
-test('should not throw if this is type of and mixing legacy classes (functions) and class', async (t) => {
+test('should not throw if `this` is type of and mixing legacy classes (functions) and class', async (t) => {
   function Class1 () {
   }
 
@@ -178,15 +178,6 @@ test('should not throw if this is type of and mixing legacy classes (functions) 
   }
 
   t.doesNotThrow(() => promisify(new Class1(), new Class2()))
-  t.end()
-})
-
-test('should be instanceof', async (t) => {
-  class Class1 {
-  }
-
-  const c = promisify(new Class1())
-  t.ok(c instanceof Class1)
   t.end()
 })
 
@@ -207,7 +198,7 @@ test('should bypass simple properties', async (t) => {
   t.end()
 })
 
-test('allow overriding this', async (t) => {
+test('should allow overriding `this`', async (t) => {
   class Class1 {
     constructor () {
       this.name = 'class1'
@@ -232,5 +223,32 @@ test('allow overriding this', async (t) => {
   const c = promisify(new Class1(), new Class2())
   const res = await c.fn()
   t.isEqual(res, 'class2')
+  t.end()
+})
+
+test('should be instanceof', async (t) => {
+  class Class1 {
+  }
+
+  const c = promisify(new Class1())
+  t.ok(c instanceof Class1)
+  t.end()
+})
+
+test('should not mangle prototype', async (t) => {
+  class Class1 {
+  }
+
+  const c = promisify(new Class1())
+  t.isEqual(Object.getPrototypeOf(c), Class1.prototype)
+  t.end()
+})
+
+test('should not mangle constructor name', async (t) => {
+  class Class1 {
+  }
+
+  const c = promisify(new Class1())
+  t.isEqual(c.constructor.name, Class1.name)
   t.end()
 })

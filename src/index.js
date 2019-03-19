@@ -12,42 +12,34 @@ const makeAsync = (fn, _this) => {
   }
 }
 
-const getOwnMethods = (obj) => {
-  let props = []
-
-  const filterFn = (e) => {
-    return (typeof obj[e] === 'function' && e !== 'constructor')
+module.exports = (methods, _this = null, promisifyFn = true) => {
+  if (typeof _this === 'boolean') {
+    promisifyFn = _this
+    _this = null
   }
 
-  do {
-    props = props.concat(Object.getOwnPropertyNames(obj).sort()
-      .filter(filterFn))
-  } while ((obj = Object.getPrototypeOf(obj)) && obj !== Object.prototype) // eslint-disable-line
-
-  return props.sort().filter((e, i, arr) => {
-    return e !== arr[i + 1]
-  })
-}
-
-module.exports = (methods, _this) => {
   if (!_this) {
     _this = methods
   }
 
-  if (typeof methods === 'function') {
-    return makeAsync(methods, _this)
+  if (typeof methods === 'function' && promisifyFn) {
+    return new Proxy(methods, {
+      apply (target, thisArg, argumentsList) {
+        return makeAsync(methods, _this)(...argumentsList)
+      }
+    })
   }
 
   if (methods.constructor) {
     const Clazz = methods.constructor
-    if (!(_this instanceof Clazz)) throw new Error('this override should be instanceof instance!')
+    if (!(_this instanceof Clazz)) throw new Error('this override should be instanceof `instance`!')
   }
 
-  const ownMethods = getOwnMethods(methods)
   const asyncMethods = {}
   const handler = {
     get (target, prop, receiver) {
-      if (typeof target[prop] !== 'function' || ownMethods.indexOf(prop) < 0) {
+      // eslint-disable-next-line valid-typeof
+      if (typeof target[prop] !== 'function' || prop === 'constructor') {
         return Reflect.get(...arguments)
       }
 

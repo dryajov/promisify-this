@@ -4,20 +4,17 @@
 
 ## Why?
 
-Many existing libraries loose the `this` binding, others would wrap the object and loose `typeof` and `instanceof` functionality, yet others would modify the object in place breaking it all together. This  library uses proxies to lazily intercept calls to instance methods and wraps them on demand. Which guaranties that the promisified instance behave as expected.
-
-Regular functions are not proxified and simply wrapped in an async (Promise) function. 
-
-Passing in a class or constructor function instead of an instance is not supported and the behavior is undefined.
+Many existing libraries loose the `this` binding, others would wrap the object and loose `typeof` and `instanceof` functionality, yet others would modify the object in place breaking it all together. This  library uses proxies to lazily intercept calls to instance methods and functions.
 
 NOTE: There might be some edge cases where it still breaks, so far I'm not aware of any, if you run into one, please open an issue.
 
 ## API
 
-- `promisify(instance [, this])` - promisify a function, object literal or a class instance, optionally using an alternative `this`. Instance methods are promisified lazily, which allows promisifying large objects without much initial overhead.
+- `promisify(instance [, this], )` - promisify a function, object literal or a class instance, optionally using an alternative `this`. Instance methods are promisified lazily, which allows promisifying large objects without much initial overhead.
   - `instance` - the instance to promisify, can be object, function or a class instance. 
     - All functions and methods are assumed to be in standard callback style, e.g. `function(args, callback)` where `callback` takes an `error` as its first argument. 
   - `this` optional - `this` to call the methods with
+  - `promisifyFn` optional (boolean, default `false`) - if `true` will treat the passed instance as a callable function.
 
 ## Usage
 

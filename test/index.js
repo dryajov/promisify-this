@@ -38,6 +38,21 @@ test('object literal', async (t) => {
   t.end()
 })
 
+test('function bag', async (t) => {
+  function bag (cb) {
+    cb(null, `not called`)
+  }
+
+  bag.fn = (a, b, cb) => {
+    cb(null, `called with ${a} ${b}`)
+  }
+
+  const mP = promisify(bag, false)
+  const res = await mP.fn('a', 'b')
+  t.isEqual(res, 'called with a b')
+  t.end()
+})
+
 test('class instance', async (t) => {
   class Methods {
     constructor () {
@@ -126,7 +141,7 @@ test('should throw if `this` is not the same type', async (t) => {
   class Class2 {
   }
 
-  t.throws(() => promisify(new Class1(), new Class2()), /this override should be instanceof instance!/)
+  t.throws(() => promisify(new Class1(), new Class2()), /this override should be instanceof `instance`!/)
   t.end()
 })
 

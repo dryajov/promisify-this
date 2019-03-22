@@ -267,3 +267,15 @@ test('should not mangle constructor name', async (t) => {
   t.isEqual(c.constructor.name, Class1.name)
   t.end()
 })
+
+test('should not promisify undef ', async (t) => {
+  const c = promisify()
+  t.is(c, undefined)
+  t.end()
+})
+
+test('should not promisify null ', async (t) => {
+  const c = promisify(null)
+  t.is(c, null)
+  t.end()
+})

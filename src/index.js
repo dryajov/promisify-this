@@ -13,6 +13,7 @@ const makeAsync = (fn, _this) => {
 }
 
 module.exports = (methods, _this = null, promisifyFn = true) => {
+  if (!methods) return methods
   if (typeof _this === 'boolean') {
     promisifyFn = _this
     _this = null

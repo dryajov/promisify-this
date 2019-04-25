@@ -1,10 +1,10 @@
 'use strict'
 
-import test from 'tape';
+import test from 'tape'
 import promisify from '../src'
 
 test('function', async (t) => {
-  function fn(cb?) {
+  function fn (cb?) {
     return cb(null, `called`)
   }
 
@@ -43,7 +43,7 @@ test('object literal', async (t) => {
 })
 
 test('function bag', async (t) => {
-  function bag(cb) {
+  function bag (cb) {
     cb(null, `not called`)
   }
 
@@ -52,6 +52,7 @@ test('function bag', async (t) => {
   }
 
   const mP = promisify(bag, false)
+  // tslint:disable-next-line: await-promise
   const res = await mP.fn('a', 'b')
   t.isEqual(res, 'called with a b')
   t.end()
@@ -60,11 +61,11 @@ test('function bag', async (t) => {
 test('class instance', async (t) => {
   class Methods {
     a: string
-    constructor() {
+    constructor () {
       this.a = 'prop a'
     }
 
-    fn(cb?) {
+    fn (cb?) {
       return cb(null, this.a)
     }
   }
@@ -76,7 +77,7 @@ test('class instance', async (t) => {
 })
 
 test('function with params', async (t) => {
-  function fn(p1, p2, cb?) {
+  function fn (p1, p2, cb?) {
     return cb(null, `called with ${p1} ${p2}`)
   }
 
@@ -112,7 +113,7 @@ test('object literal with params', async (t) => {
 
 test('class instance with params', async (t) => {
   class Methods {
-    fn(p1, p2, cb?) {
+    fn (p1, p2, cb?) {
       return cb(null, `called with ${p1} ${p2}`)
     }
   }
@@ -126,10 +127,10 @@ test('class instance with params', async (t) => {
 test('class instance with constructor params', async (t) => {
   class Methods {
     d: string
-    constructor(d) {
+    constructor (d) {
       this.d = d
     }
-    fn(p1, p2, cb?) {
+    fn (p1, p2, cb?) {
       return cb(null, `called with ${p1} ${p2} ${this.d}`)
     }
   }
@@ -165,10 +166,9 @@ test('should not throw if `this` is type of', async (t) => {
 test('works with legacy classes (functions)', async (t) => {
   interface Methods {
     d: any
-    new(): Methods
   }
 
-  function Methods(this: Methods, d) {
+  function Methods (this: Methods, d) {
     this.d = d
   }
 
@@ -184,12 +184,12 @@ test('works with legacy classes (functions)', async (t) => {
 
 test('should not throw if `this` is type of and using legacy classes (functions)', async (t) => {
   interface Class1 {
-    new(): Class1
   }
 
-  function Class1() { }
+  // tslint:disable-next-line: no-empty
+  function Class1 () {}
 
-  function Class2(this: Class1) {
+  function Class2 (this: Class1) {
     Class1.call(this)
   }
 
@@ -214,11 +214,11 @@ test('should not throw if `this` is type of and mixing legacy classes (functions
 test('should bypass simple properties', async (t) => {
   class Class1 {
     p2: string
-    constructor() {
+    constructor () {
       this.p2 = 'p2'
     }
 
-    get p1() {
+    get p1 () {
       return 'p1'
     }
   }
@@ -232,22 +232,22 @@ test('should bypass simple properties', async (t) => {
 test('should allow overriding `this`', async (t) => {
   class Class1 {
     name: string
-    constructor() {
+    constructor () {
       this.name = 'class1'
     }
 
-    fn(cb) {
+    fn (cb?) {
       return cb(null, this.name)
     }
   }
 
   class Class2 extends Class1 {
-    constructor() {
+    constructor () {
       super()
       this.name = 'class2'
     }
 
-    fn(cb?) {
+    fn (cb?) {
       return cb(null, this.name)
     }
   }

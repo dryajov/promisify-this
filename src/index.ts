@@ -13,30 +13,25 @@ const makeAsync = <T extends Function>(fn: T, _this: any): Promisified => {
   }
 }
 
-export default function promisify<T>(
-  methods: T | { [name: string]: Function },
-  _this: T | { [name: string]: Function }): T
+type AnyFunc = (...args: any[]) => Promise<any>
+type FuncBag = { [name: string]: AnyFunc }
 
-export default function promisify<T>(
-  methods: T | {[name: string]: Function}): T
-
-export default function promisify<T>(
-  methods: T | { [name: string]: Function },
-  promisifyFn: boolean): T
-
-export default function promisify<T>(
-  methods: T | {[name: string]: Function},
-  _this: T | { [name: string]: Function } = methods,
+export default function promisify<T> (
+  methods: T | FuncBag,
+  _this: T | FuncBag | boolean = methods,
   promisifyFn: boolean = true): T {
+
   if (!methods) {
     throw new Error('missing object or function to promisify')
   }
 
+  // tslint:disable-next-line: strict-type-predicates
   if (typeof _this === 'boolean') {
     promisifyFn = _this
     _this = null as any // we do want to clean it up here
   }
 
+  // tslint:disable-next-line: strict-type-predicates
   if (typeof methods === 'function' && promisifyFn) {
     return new Proxy(methods, {
       apply (target, thisArg, args) {
@@ -52,7 +47,7 @@ export default function promisify<T>(
 
   const asyncMethods = {}
   const handler = {
-    get(target, prop) {
+    get (target, prop) {
       if (typeof target[prop] !== 'function' || prop === 'constructor') {
         return target[prop]
       }

@@ -2,9 +2,13 @@
   "name": "promisify-this",
   "version": "2.0.2",
   "description": "Promisify anything preserving this",
-  "main": "src/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
-    "test": "tape test/index.js"
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "lint": "tslint --project tsconfig.json",
+    "lint:fix": "tslint --project tsconfig.json --fix",
+    "test": "node -r ts-node/register -r source-map-support/register node_modules/tape/bin/tape test/index.ts"
   },
   "keywords": [
     "promisify",
@@ -20,7 +24,11 @@
   "author": "Dmitriy Ryajov <dryajov@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/tape": "^4.2.33",
+    "source-map-support": "^0.5.12",
     "tape": "^4.10.1",
-    "tape-await": "^0.1.1"
+    "tape-await": "^0.1.1",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
   }
 }

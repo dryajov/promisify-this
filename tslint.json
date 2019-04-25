@@ -1,0 +1,12 @@
+{
+  "extends": "tslint-config-standard",
+  "align": [
+    true,
+    "parameters",
+    "statements",
+    "arguments",
+    "members",
+    "elements"
+  ],
+  "space-before-function-paren": true
+}

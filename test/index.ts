@@ -1,10 +1,10 @@
 'use strict'
 
 import test from 'tape'
-import promisify from '../src'
+import promisify, { Promisify } from '../src'
 
 test('function', async (t) => {
-  function fn (cb?) {
+  function fn (cb?): void {
     return cb(null, `called`)
   }
 
@@ -65,13 +65,13 @@ test('class instance', async (t) => {
       this.a = 'prop a'
     }
 
-    fn (cb?) {
+    fn (cb?): void {
       return cb(null, this.a)
     }
   }
 
-  const mP: Methods = promisify(new Methods())
-  const res = await mP.fn()
+  const mP = promisify(new Methods())
+  const res: string = await mP.fn()
   t.isEqual(res, 'prop a')
   t.end()
 })

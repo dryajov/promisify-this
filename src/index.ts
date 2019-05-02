@@ -16,11 +16,15 @@ const makeAsync = <T extends Function>(fn: T, _this: any): Promisified => {
 type AnyFunc = (...args: any[]) => Promise<any>
 type FuncBag = { [name: string]: AnyFunc }
 
-export default function promisify<T> (
+type PromisifyFunc<T, U> = T extends (...args: any) => unknown ? (...args: any) => Promise<U> : any
+export type Promisify<T, U> = {
+  [K in keyof T]: PromisifyFunc<T[K], U>
+}
+
+export default function promisify<T, U> (
   methods: T | FuncBag,
   _this: T | FuncBag | boolean = methods,
-  promisifyFn: boolean = true): T {
-
+  promisifyFn: boolean = true): T extends (...args: any) => any ? PromisifyFunc<T, U> : Promisify<T, U> {
   if (!methods) {
     throw new Error('missing object or function to promisify')
   }
@@ -37,7 +41,7 @@ export default function promisify<T> (
       apply (target, thisArg, args) {
         return makeAsync(methods, _this || methods)(...args)
       }
-    })
+    }) as T
   }
 
   if (methods.constructor && _this) {

@@ -1,7 +1,7 @@
 'use strict'
 
 import test from 'tape'
-import promisify, { Promisify } from '../src'
+import promisify, { Promisify, PromisifyAll } from '../src'
 
 test('function', async (t) => {
   function fn (cb?): void {
@@ -26,11 +26,7 @@ test('=> function', async (t) => {
 })
 
 test('object literal', async (t) => {
-  interface Methods {
-    fn: (cb?) => Promise<any>
-  }
-
-  const methods: Methods = {
+  const methods = {
     fn: (cb) => {
       return cb(null, `called`)
     }
@@ -71,7 +67,7 @@ test('class instance', async (t) => {
   }
 
   const mP = promisify(new Methods())
-  const res: string = await mP.fn()
+  const res = await mP.fn()
   t.isEqual(res, 'prop a')
   t.end()
 })
@@ -81,7 +77,7 @@ test('function with params', async (t) => {
     return cb(null, `called with ${p1} ${p2}`)
   }
 
-  const fnP = promisify(fn)
+  const fnP: Promisify<typeof fn> = promisify(fn)
   const res = await fnP('a', 'b')
   t.isEqual(res, 'called with a b')
   t.end()
@@ -92,7 +88,7 @@ test('=> function with params', async (t) => {
     return cb(null, `called with ${p1} ${p2}`)
   }
 
-  const fnP = promisify(fn)
+  const fnP: Promisify<typeof fn> = promisify(fn)
   const res = await fnP('a', 'b')
   t.isEqual(res, 'called with a b')
   t.end()
@@ -105,7 +101,7 @@ test('object literal with params', async (t) => {
     }
   }
 
-  const mP = promisify(methods)
+  const mP: PromisifyAll<typeof methods> = promisify(methods)
   const res = await mP.fn('a', 'b')
   t.isEqual(res, 'called with a b')
   t.end()
@@ -113,12 +109,12 @@ test('object literal with params', async (t) => {
 
 test('class instance with params', async (t) => {
   class Methods {
-    fn (p1, p2, cb?) {
+    fn (p1, p2, cb) {
       return cb(null, `called with ${p1} ${p2}`)
     }
   }
 
-  const mP: Methods = promisify(new Methods())
+  const mP = promisify(new Methods())
   const res = await mP.fn('a', 'b')
   t.isEqual(res, 'called with a b')
   t.end()
@@ -135,7 +131,7 @@ test('class instance with constructor params', async (t) => {
     }
   }
 
-  const mP: Methods = promisify(new Methods('d'))
+  const mP = promisify(new Methods('d'))
   const res = await mP.fn('a', 'b')
   t.isEqual(res, 'called with a b d')
   t.end()
@@ -166,7 +162,7 @@ test('should not throw if `this` is type of', async (t) => {
 test('works with legacy classes (functions)', async (t) => {
   interface Methods {
     d: any
-    fn: (a, b) => any
+    fn: (a, b, cb) => any
   }
 
   function Methods (this: Methods, d) {
@@ -177,7 +173,7 @@ test('works with legacy classes (functions)', async (t) => {
     return cb(null, `called with ${p1} ${p2} ${this.d}`)
   }
 
-  const mP: Methods = promisify(new Methods('d'))
+  const mP = promisify<Methods>(new Methods('d'))
   const res = await mP.fn('a', 'b')
   t.isEqual(res, 'called with a b d')
   t.end()
@@ -223,7 +219,7 @@ test('should bypass simple properties', async (t) => {
     }
   }
 
-  const c: Class1 = promisify(new Class1())
+  const c = promisify(new Class1())
   t.isEqual(c.p1, 'p1')
   t.isEqual(c.p2, 'p2')
   t.end()
@@ -252,7 +248,7 @@ test('should allow overriding `this`', async (t) => {
     }
   }
 
-  const c: Class2 = promisify(new Class1(), new Class2())
+  const c = promisify(new Class1(), new Class2())
   const res = await c.fn()
   t.isEqual(res, 'class2')
   t.end()

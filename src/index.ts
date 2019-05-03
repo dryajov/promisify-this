@@ -1,7 +1,9 @@
 'use strict'
 
-type Promisified = <T>(...args: any[]) => Promise<T>
+import { Promisify, PromisifyAll } from './types'
+export { Promisify, PromisifyAll } from './types'
 
+type Promisified = <T>(...args: any[]) => Promise<T>
 const makeAsync = <T extends Function>(fn: T, _this: any): Promisified => {
   return function (...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -13,18 +15,14 @@ const makeAsync = <T extends Function>(fn: T, _this: any): Promisified => {
   }
 }
 
-type AnyFunc = (...args: any[]) => Promise<any>
-type FuncBag = { [name: string]: AnyFunc }
-
-type PromisifyFunc<T, U> = T extends (...args: any) => unknown ? (...args: any) => Promise<U> : any
-export type Promisify<T, U> = {
-  [K in keyof T]: PromisifyFunc<T[K], U>
-}
-
-export default function promisify<T, U> (
-  methods: T | FuncBag,
-  _this: T | FuncBag | boolean = methods,
-  promisifyFn: boolean = true): T extends (...args: any) => any ? PromisifyFunc<T, U> : Promisify<T, U> {
+export default function promisify<T extends Function> (methods: T): Promisify<T>
+export default function promisify<
+  T extends { [K in keyof T]: T[K] }
+> (methods: T, promisifyFn?: boolean | T): PromisifyAll<T>
+export default function promisify<T> (
+  methods: T,
+  _this: T | boolean = methods,
+  promisifyFn: boolean = true): Promisify<T> | T {
   if (!methods) {
     throw new Error('missing object or function to promisify')
   }

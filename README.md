@@ -18,9 +18,34 @@ NOTE: There might be some edge cases where it still breaks, so far I'm not aware
 
 ## Usage
 
+#### Typescript
+
+```typescript
+import { promisify } from './src'
+
+(async () => {
+  class MyClass {
+    d: string
+    constructor(d: string) {
+      this.d = d
+    }
+    fn(p1, p2, cb) {
+      return cb(null, `called with ${p1} ${p2} ${this.d}`)
+    }
+  }
+
+  const mP = promisify(new MyClass('d'))
+  const res = await mP.fn('a', 'b')
+  console.log(res)
+  // prints 'called with a b d'
+})()
+```
+
+#### Javascript
+
 ```js
 (async () => {
-  const promisify = require('promisify-this')
+  const { promisify } = require('promisify-this')
 
   class MyClass {
     constructor (d) {
@@ -37,6 +62,34 @@ NOTE: There might be some edge cases where it still breaks, so far I'm not aware
   // prints 'called with a b d'
 })()
 ```
+
+# VERSIONS 2.1.0 & 2.2.0 broke CommonJs compatibility
+
+## TL;DR
+
+> Either upgrade to version 3.0.0 **and** use a named export, as in:
+>
+> `import { promisify } from 'promisify-this'`
+>
+> or
+>
+> `const { promisify } = require('promisify-this')`
+>
+> or downgrade to version 2.0.2 to continue using the previous CommonJs default export pattern of:
+>
+> `const promisify = require('promisify-this)`
+>
+> Alternatively, you can continue using versions 2.1.0 & 2.2.0 (*note however, that this versions have been deprecated*) with the following syntax:
+>
+> `const {default: promisify} = require('promisify-this')`
+
+## Typescript migration and breaking changes
+
+This module has been rewritten in Typescript beginning with version 2.1.0. The previous pure js implementation relied on the CommonJs pattern of `module.exports = function(){}`. This pattern doesn't work well under the new ES6 modules spec, nor is it fully supported by Typescript as such. Versions `2.1.0` and `2.2.0` relied on the `default export` syntax which doesn't simply map to `module.exports = function(){}`, but adds a new entry - `default` in the exports object, this in turn, ends up mapping to `module.exports = { default: function(){} }` in CommonJs, which is not the intent and breaks compatibility.
+
+Beginning with version `3.0.0` the `default export` has been removed in favor on named exports.
+
+-------------------------
 
 Enjoy!
 

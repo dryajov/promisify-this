@@ -15,11 +15,11 @@ const makeAsync = <T extends Function>(fn: T, _this: any): Promisified => {
   }
 }
 
-export default function promisify<T extends Function> (methods: T): Promisify<T>
-export default function promisify<
+export function promisify<T extends Function> (methods: T): Promisify<T>
+export function promisify<
   T extends { [K in keyof T]: T[K] }
 > (methods: T, promisifyFn?: boolean | T): PromisifyAll<T>
-export default function promisify<T> (
+export function promisify<T> (
   methods: T,
   _this: T | boolean = methods,
   promisifyFn: boolean = true): Promisify<T> | T {

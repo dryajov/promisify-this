@@ -1,7 +1,7 @@
 'use strict'
 
 import test from 'tape'
-import promisify, { Promisify, PromisifyAll } from '../src'
+import { promisify, Promisify, PromisifyAll } from '../src'
 
 test('function', async (t) => {
   function fn (cb?): void {
@@ -291,5 +291,20 @@ test('should not promisify undef ', async (t) => {
 test('should not promisify null ', async (t) => {
   const prom = promisify
   t.throws(() => prom(null), 'missing object or function to promisify')
+  t.end()
+})
+
+test('js interop - should require promisify correctly', async (t) => {
+  const { promisify: requirePromisify } = require('../src')
+
+  class MyClass {
+    great (cb) {
+      cb(null, 'hello!')
+    }
+  }
+
+  const myClass = requirePromisify(new MyClass())
+  const greating = await myClass.great()
+  t.isEqual(greating, 'hello!')
   t.end()
 })
